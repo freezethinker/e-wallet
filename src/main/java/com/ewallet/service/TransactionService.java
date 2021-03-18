@@ -41,30 +41,29 @@ public class TransactionService {
         return transactionRepository.getTransactionsByWalletId(wallet.getWalletId());
     }
 
-    public void debit(DebitRequest request) throws ValidationError, InternalException {
+    public Transaction debit(DebitRequest request) throws ValidationError, InternalException {
         validateDebitRequest(request);
         Wallet wallet = walletService.getWalletByPhoneNo(request.getPhoneNo());
         validateDebitTransaction(request, wallet);
 
         String transactionId = createTransaction(wallet, request);
-//        Thread.sleep(10000);
         wallet.setBalance(wallet.getBalance() - request.getAmount());
-        updateTransaction(transactionId, TransactionStatus.COMPLETED);
+        return updateTransaction(transactionId, TransactionStatus.COMPLETED);
     }
 
-    public void credit(CreditRequest request) throws ValidationError, InternalException {
+    public Transaction credit(CreditRequest request) throws ValidationError, InternalException {
         validateCreditRequest(request);
         Wallet wallet = walletService.getWalletByPhoneNo(request.getPhoneNo());
 
         String transactionId = createTransaction(wallet, request);
-//        Thread.sleep(10000);
         wallet.setBalance(wallet.getBalance() + request.getAmount());
-        updateTransaction(transactionId, TransactionStatus.COMPLETED);
+        return updateTransaction(transactionId, TransactionStatus.COMPLETED);
     }
 
-    private void updateTransaction(String transactionId, TransactionStatus status) throws InternalException {
+    private Transaction updateTransaction(String transactionId, TransactionStatus status) throws InternalException {
         Transaction transaction = transactionRepository.getTransactionFromTransactionId(transactionId);
         transaction.setStatus(status);
+        return transaction;
     }
 
     private String createTransaction(Wallet wallet, TransactionRequest request) {

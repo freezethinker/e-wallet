@@ -22,10 +22,11 @@ public class WalletService {
         this.walletRepository = walletRepository;
     }
 
-    public void createWallet(CreateWalletRequest request) throws ValidationError {
+    public Wallet createWallet(CreateWalletRequest request) throws ValidationError {
         validateCreateWalletRequest(request);
         Wallet wallet = createWallet(createUser(request));
         walletRepository.addWallet(wallet);
+        return wallet;
     }
 
     public Wallet getWalletByPhoneNo(String phoneNo) throws InternalException {

@@ -28,7 +28,7 @@ import javax.validation.Valid;
 @RequestMapping(value = "/api/v1/wallet",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
-public class WalletController {
+public class WalletController extends BaseController {
 
     private final WalletService walletService;
     private final TransactionService transactionService;
@@ -41,23 +41,25 @@ public class WalletController {
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<?> createWallet(@Valid @RequestBody CreateWalletRequest request) {
+        log.info("Wallet create request received: {}", request.toString());
         try {
-            walletService.createWallet(request);
-            return new ResponseEntity<>("Successful!", HttpStatus.OK);
-        } catch (ValidationError validationError) {
-            return new ResponseEntity<>(validationError.getMessage(), HttpStatus.BAD_REQUEST);
+            Wallet wallet = walletService.createWallet(request);
+            return new ResponseEntity<>(createSuccessResponse(wallet), HttpStatus.OK);
+        } catch (ValidationError e) {
+            return new ResponseEntity<>(createErrorResponse(e), HttpStatus.BAD_REQUEST);
         }
     }
 
-    @RequestMapping(value = "/show/{phoneNo}", method = RequestMethod.GET)
+    @RequestMapping(value = "/status/{phoneNo}", method = RequestMethod.GET)
     public ResponseEntity<?> showWallet(@PathVariable(value = "phoneNo") String phoneNo) {
+        log.info("Wallet status request received: {}", phoneNo);
         try {
             WalletStatusResponse walletStatusResponse = new WalletStatusResponse();
             walletStatusResponse.setWallet(walletService.getWalletByPhoneNo(phoneNo));
             walletStatusResponse.setTransactions(transactionService.getTransactionByPhoneNo(phoneNo));
-            return new ResponseEntity<>(walletStatusResponse, HttpStatus.OK);
+            return new ResponseEntity<>(createSuccessResponse(walletStatusResponse), HttpStatus.OK);
         } catch (InternalException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(createErrorResponse(e), HttpStatus.BAD_REQUEST);
         }
     }
 

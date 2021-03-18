@@ -1,5 +1,6 @@
 package com.ewallet.controller;
 
+import com.ewallet.entity.Transaction;
 import com.ewallet.entity.TransactionType;
 import com.ewallet.entity.request.CreditRequest;
 import com.ewallet.entity.request.DebitRequest;
@@ -26,7 +27,7 @@ import javax.validation.Valid;
 @RequestMapping(value = "/api/v1/transact",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
-public class TransactionController {
+public class TransactionController extends BaseController {
 
     private final TransactionService transactionService;
 
@@ -37,23 +38,25 @@ public class TransactionController {
 
     @RequestMapping(value = "/debit", method = RequestMethod.POST)
     public ResponseEntity<?> debit(@RequestBody DebitRequest request) {
+        log.info("Debit request received: {}", request.toString());
         try {
             request.setTransactionType(TransactionType.DEBIT);
-            transactionService.debit(request);
-            return new ResponseEntity<>("Successful!", HttpStatus.OK);
+            Transaction transaction = transactionService.debit(request);
+            return new ResponseEntity<>(createSuccessResponse(transaction), HttpStatus.OK);
         } catch (ValidationError | InternalException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(createErrorResponse(e), HttpStatus.BAD_REQUEST);
         }
     }
 
     @RequestMapping(value = "/credit", method = RequestMethod.POST)
     public ResponseEntity<?> credit(@RequestBody CreditRequest request) {
+        log.info("Credit request received: {}", request.toString());
         try {
             request.setTransactionType(TransactionType.CREDIT);
-            transactionService.credit(request);
-            return new ResponseEntity<>("Successful!", HttpStatus.OK);
+            Transaction transaction = transactionService.credit(request);
+            return new ResponseEntity<>(createSuccessResponse(transaction), HttpStatus.OK);
         } catch (ValidationError | InternalException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(createErrorResponse(e), HttpStatus.BAD_REQUEST);
         }
     }
 
