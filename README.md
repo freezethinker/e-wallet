@@ -6,6 +6,8 @@ This is a very basic e-Wallet Transaction System that provides small  features r
 * Create a debit transaction (with checks on maximum debit amount, minimum wallet balance)
 * Create a credit transaction
 * Get current wallet status (balance,  list of transactions etc.)
+* Minimum wallet balance to be maintained, driven via configuration.
+* A maximum cap on a single debit request, driven via configuration.
 
 ### Non-Functional Requirements
 * Handle simultaneous debits, honouring the first request and asking the user to re-try on the second request.
@@ -15,6 +17,10 @@ This is a very basic e-Wallet Transaction System that provides small  features r
 * `/src/main/java/resources` contains the resources files - application.properties
 * `gradle clean build` to create an executable JAR.
 * `java -jar build/libs/e-wallet-1.0.jar` to run the JAR.
+
+### Config Properties:
+* Minimum wallet balance to maintain: `limits.min-wallet-balance` (default = 100)
+* Maximum debit limit for users: `limits.max-debit` (default = 1000)
 
 ### cURL Requests
 * Create Wallet:
@@ -56,4 +62,8 @@ curl --request POST \
 ```
 ### Demo Response 
 * Create Wallet, Credit 500, Debit 100, Check Status:
-![Image](demoAPI.png)
+![Image](usecase1.png)
+* Create Wallet, Credit 500, Debit 100, (10s sleep), Debit 100:
+![Image](usecase2.png) 
+* Create Wallet, Debit 100:
+![Image](usecase3.png)

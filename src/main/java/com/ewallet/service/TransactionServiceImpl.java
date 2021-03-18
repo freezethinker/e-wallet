@@ -50,6 +50,7 @@ public class TransactionServiceImpl implements TransactionService {
         //To handle race-conditions of concurrent debits
         walletService.acquireWriteLockOnWallet(wallet.getWalletId());
 
+//        Thread.sleep(100000);
         String transactionId = createTransaction(wallet, request);
         wallet.setBalance(wallet.getBalance() - request.getAmount());
         Transaction transaction = updateTransaction(transactionId, TransactionStatus.COMPLETED);
@@ -90,7 +91,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (newBalance < 0 || newBalance < minWalletBalance)
             throw new ValidationError("Minimum wallet balance to maintain - INR" + minWalletBalance);
         if(wallet.isInTransaction())
-            throw new InternalException("Please complete the ongoing and try again!");
+            throw new InternalException("Please complete the ongoing transaction and try again!");
     }
 
     private void validateDebitRequest(DebitRequest request) throws ValidationError {
