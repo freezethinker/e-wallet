@@ -6,8 +6,13 @@ This is a very basic e-Wallet Transaction System that provides small  features r
 * Create a debit transaction (with checks on maximum debit amount, minimum wallet balance)
 * Create a credit transaction
 * Get current wallet status (balance,  list of transactions etc.)
+
+### System Validations
 * Minimum wallet balance to be maintained, driven via configuration.
 * A maximum cap on a single debit request, driven via configuration.
+* Mobile number should be exactly 10 digits long.
+* First name should contain atleast 3 characters.
+* Debit & credit amount cannot be negative.
 
 ### Non-Functional Requirements
 * Handle simultaneous debits, honouring the first request and asking the user to re-try on the second request.
