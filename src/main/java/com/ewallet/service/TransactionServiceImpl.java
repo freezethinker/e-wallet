@@ -45,10 +45,10 @@ public class TransactionServiceImpl implements TransactionService {
     public Transaction debit(DebitRequest request) throws ValidationError, InternalException {
         validateDebitRequest(request);
         Wallet wallet = walletService.getWalletByPhoneNo(request.getPhoneNo());
+        validateDebitTransaction(request, wallet);
 
         //To handle race-conditions of concurrent debits
         walletService.acquireWriteLockOnWallet(wallet.getWalletId());
-        validateDebitTransaction(request, wallet);
 
         String transactionId = createTransaction(wallet, request);
         wallet.setBalance(wallet.getBalance() - request.getAmount());
@@ -85,10 +85,12 @@ public class TransactionServiceImpl implements TransactionService {
             throw new ValidationError("Credit amount incorrect - INR" + request.getAmount());
     }
 
-    private void validateDebitTransaction(DebitRequest request, Wallet wallet) throws ValidationError {
+    private void validateDebitTransaction(DebitRequest request, Wallet wallet) throws ValidationError, InternalException {
         float newBalance = wallet.getBalance() - request.getAmount();
         if (newBalance < 0 || newBalance < minWalletBalance)
             throw new ValidationError("Minimum wallet balance to maintain - INR" + minWalletBalance);
+        if(wallet.isInTransaction())
+            throw new InternalException("Please complete the ongoing and try again!");
     }
 
     private void validateDebitRequest(DebitRequest request) throws ValidationError {

@@ -1,9 +1,14 @@
 # e-Wallet Transaction System
-This is a very basic e-Wallet Tranasction  System that provides the following features for a user:
+This is a very basic e-Wallet Transaction System that provides small  features revolving around wallets. user:
+
+### Functional Requirements
 * Create a wallet (with phone number and name)
 * Create a debit transaction (with checks on maximum debit amount, minimum wallet balance)
 * Create a credit transaction
 * Get current wallet status (balance,  list of transactions etc.)
+
+### Non-Functional Requirements
+* Handle simultaneous debits, honouring the first request and asking the user to re-try on the second request.
 
 ### Execution Details
 * `/src/main/java/com/ewallet` contains all the solution files.
