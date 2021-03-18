@@ -1,5 +1,5 @@
 # e-Wallet Transaction System
-This is a very basic e-Wallet Transaction System that provides small  features revolving around wallets. user:
+This is a very basic e-Wallet Transaction System that provides small  features revolving around user's wallets.
 
 ### Functional Requirements
 * Create a wallet (with phone number and name)
