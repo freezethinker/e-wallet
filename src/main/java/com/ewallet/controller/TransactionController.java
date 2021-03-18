@@ -6,7 +6,7 @@ import com.ewallet.entity.request.CreditRequest;
 import com.ewallet.entity.request.DebitRequest;
 import com.ewallet.exception.InternalException;
 import com.ewallet.exception.ValidationError;
-import com.ewallet.service.TransactionServiceImpl;
+import com.ewallet.service.TransactionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,10 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
         produces = MediaType.APPLICATION_JSON_VALUE)
 public class TransactionController extends BaseController {
 
-    private final TransactionServiceImpl transactionService;
+    private final TransactionService transactionService;
 
     @Autowired
-    public TransactionController(TransactionServiceImpl transactionService) {
+    public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
     }
 

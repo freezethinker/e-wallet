@@ -10,6 +10,7 @@ import java.util.Objects;
 /**
  * Created by karan.uppal on 18/03/21
  **/
+@Repository
 public class WalletRepositoryImpl implements WalletRepository {
 
     private HashMap<String, Wallet> walletIdtoWalletMap;

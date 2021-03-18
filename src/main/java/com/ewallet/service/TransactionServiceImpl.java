@@ -8,7 +8,7 @@ import com.ewallet.entity.request.DebitRequest;
 import com.ewallet.entity.request.TransactionRequest;
 import com.ewallet.exception.InternalException;
 import com.ewallet.exception.ValidationError;
-import com.ewallet.repository.TransactionRepositoryInMemory;
+import com.ewallet.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,10 +18,12 @@ import java.util.List;
 /**
  * Created by karan.uppal on 18/03/21
  **/
+@Service
 public class TransactionServiceImpl implements TransactionService {
 
-    private WalletServiceImpl walletService;
-    private TransactionRepositoryInMemory transactionRepository;
+    private final WalletService walletService;
+
+    private final TransactionRepository transactionRepository;
 
     @Value("#{T(java.lang.Float).parseFloat('${limits.min-wallet-balance}')}")
     private float minWalletBalance;
@@ -30,7 +32,7 @@ public class TransactionServiceImpl implements TransactionService {
     private float maxDebitLimit;
 
     @Autowired
-    public TransactionServiceImpl(WalletServiceImpl walletService, TransactionRepositoryInMemory transactionRepository) {
+    public TransactionServiceImpl(WalletService walletService, TransactionRepository transactionRepository) {
         this.walletService = walletService;
         this.transactionRepository = transactionRepository;
     }

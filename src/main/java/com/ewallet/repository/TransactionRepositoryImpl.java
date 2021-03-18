@@ -2,6 +2,7 @@ package com.ewallet.repository;
 
 import com.ewallet.entity.Transaction;
 import com.ewallet.exception.InternalException;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -12,12 +13,13 @@ import java.util.Objects;
 /**
  * Created by karan.uppal on 18/03/21
  **/
-public class TransactionRepositoryInMemory {
+@Repository
+public class TransactionRepositoryImpl implements TransactionRepository {
 
     private HashMap<String, Transaction> transactionIdToTransaction;
     private HashMap<String, List<String>> walletIdToTransactionIds;
 
-    public TransactionRepositoryInMemory() {
+    public TransactionRepositoryImpl() {
         this.transactionIdToTransaction = new HashMap<>();
         this.walletIdToTransactionIds = new HashMap<>();
     }

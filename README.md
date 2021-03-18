@@ -49,3 +49,6 @@ curl --request POST \
 	"amount": 100
 }'
 ```
+### Demo Response 
+* Create Wallet, Credit 500, Debit 100, Check Status:
+![Image](demoAPI.png)

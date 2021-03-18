@@ -5,19 +5,20 @@ import com.ewallet.entity.Wallet;
 import com.ewallet.entity.request.CreateWalletRequest;
 import com.ewallet.exception.InternalException;
 import com.ewallet.exception.ValidationError;
-import com.ewallet.repository.WalletRepositoryImpl;
+import com.ewallet.repository.WalletRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
  * Created by karan.uppal on 18/03/21
  **/
+@Service
 public class WalletServiceImpl implements WalletService {
 
-    private final WalletRepositoryImpl walletRepository;
+    private final WalletRepository walletRepository;
 
     @Autowired
-    public WalletServiceImpl(WalletRepositoryImpl walletRepository) {
+    public WalletServiceImpl(WalletRepository walletRepository) {
         this.walletRepository = walletRepository;
     }
 

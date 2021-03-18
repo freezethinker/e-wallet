@@ -5,8 +5,8 @@ import com.ewallet.entity.request.CreateWalletRequest;
 import com.ewallet.entity.response.WalletStatusResponse;
 import com.ewallet.exception.InternalException;
 import com.ewallet.exception.ValidationError;
-import com.ewallet.service.TransactionServiceImpl;
-import com.ewallet.service.WalletServiceImpl;
+import com.ewallet.service.TransactionService;
+import com.ewallet.service.WalletService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,11 +30,11 @@ import javax.validation.Valid;
         produces = MediaType.APPLICATION_JSON_VALUE)
 public class WalletController extends BaseController {
 
-    private final WalletServiceImpl walletService;
-    private final TransactionServiceImpl transactionService;
+    private final WalletService walletService;
+    private final TransactionService transactionService;
 
     @Autowired
-    public WalletController(WalletServiceImpl walletService, TransactionServiceImpl transactionService) {
+    public WalletController(WalletService walletService, TransactionService transactionService) {
         this.walletService = walletService;
         this.transactionService = transactionService;
     }
