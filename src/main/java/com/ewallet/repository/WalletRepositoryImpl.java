@@ -10,18 +10,17 @@ import java.util.Objects;
 /**
  * Created by karan.uppal on 18/03/21
  **/
-@Repository
-public class WalletRepository {
+public class WalletRepositoryImpl implements WalletRepository {
 
     private HashMap<String, Wallet> walletIdtoWalletMap;
     private HashMap<String, String> phoneNumberToWalletIdMap;
 
-    public WalletRepository() {
+    public WalletRepositoryImpl() {
         this.walletIdtoWalletMap = new HashMap<>();
         this.phoneNumberToWalletIdMap = new HashMap<>();
     }
 
-    public void addWallet(Wallet wallet) {
+    public void add(Wallet wallet) {
         walletIdtoWalletMap.put(wallet.getWalletId(), wallet);
         phoneNumberToWalletIdMap.put(wallet.getUser().getPhoneNo(), wallet.getWalletId());
     }
@@ -40,5 +39,9 @@ public class WalletRepository {
         }
         return getWalletByWalletId(walletId);
 
+    }
+
+    public void updateWalletByWalletId(String id, Wallet wallet) {
+        walletIdtoWalletMap.put(id, wallet);
     }
 }

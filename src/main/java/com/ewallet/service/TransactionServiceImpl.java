@@ -8,7 +8,7 @@ import com.ewallet.entity.request.DebitRequest;
 import com.ewallet.entity.request.TransactionRequest;
 import com.ewallet.exception.InternalException;
 import com.ewallet.exception.ValidationError;
-import com.ewallet.repository.TransactionRepository;
+import com.ewallet.repository.TransactionRepositoryInMemory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,11 +18,10 @@ import java.util.List;
 /**
  * Created by karan.uppal on 18/03/21
  **/
-@Service
-public class TransactionService {
+public class TransactionServiceImpl implements TransactionService {
 
-    private WalletService walletService;
-    private TransactionRepository transactionRepository;
+    private WalletServiceImpl walletService;
+    private TransactionRepositoryInMemory transactionRepository;
 
     @Value("#{T(java.lang.Float).parseFloat('${limits.min-wallet-balance}')}")
     private float minWalletBalance;
@@ -31,12 +30,12 @@ public class TransactionService {
     private float maxDebitLimit;
 
     @Autowired
-    public TransactionService(WalletService walletService, TransactionRepository transactionRepository) {
+    public TransactionServiceImpl(WalletServiceImpl walletService, TransactionRepositoryInMemory transactionRepository) {
         this.walletService = walletService;
         this.transactionRepository = transactionRepository;
     }
 
-    public List<Transaction> getTransactionByPhoneNo(String phoneNo) throws InternalException {
+    public List<Transaction> getTransactionsByPhoneNo(String phoneNo) throws InternalException {
         Wallet wallet = walletService.getWalletByPhoneNo(phoneNo);
         return transactionRepository.getTransactionsByWalletId(wallet.getWalletId());
     }
@@ -44,11 +43,18 @@ public class TransactionService {
     public Transaction debit(DebitRequest request) throws ValidationError, InternalException {
         validateDebitRequest(request);
         Wallet wallet = walletService.getWalletByPhoneNo(request.getPhoneNo());
+
+        //To handle race-conditions of concurrent debits
+        walletService.acquireWriteLockOnWallet(wallet.getWalletId());
         validateDebitTransaction(request, wallet);
 
         String transactionId = createTransaction(wallet, request);
         wallet.setBalance(wallet.getBalance() - request.getAmount());
-        return updateTransaction(transactionId, TransactionStatus.COMPLETED);
+        Transaction transaction = updateTransaction(transactionId, TransactionStatus.COMPLETED);
+
+        //Return wallet to normal state and return
+        walletService.releaseWriteLockOnWallet(wallet.getWalletId());
+        return transaction;
     }
 
     public Transaction credit(CreditRequest request) throws ValidationError, InternalException {

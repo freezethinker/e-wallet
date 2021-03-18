@@ -9,13 +9,16 @@ import java.util.UUID;
  **/
 @Data
 public class Wallet {
+
     private String walletId;
     private User user;
     private float balance;
+    private boolean inTransaction;
 
     public Wallet(User user) {
         this.walletId = UUID.randomUUID().toString();
         this.user = user;
         this.balance = 0;
+        this.inTransaction = false;
     }
 }

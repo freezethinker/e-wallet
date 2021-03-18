@@ -10,3 +10,42 @@ This is a very basic e-Wallet Tranasction  System that provides the following fe
 * `/src/main/java/resources` contains the resources files - application.properties
 * `gradle clean build` to create an executable JAR.
 * `java -jar build/libs/e-wallet-1.0.jar` to run the JAR.
+
+### cURL Requests
+* Create Wallet:
+```
+curl --request POST \
+  --url http://localhost:8080/api/v1/wallet/create \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"phoneNo" : "9632211999",
+	"firstName": "Karan",
+	"lastName": "Uppal"
+}'
+```
+* Get Wallet Status (Balance, Transactions etc.):
+```
+curl --request GET \
+  --url http://localhost:8080/api/v1/wallet/status/9632211999 \
+  --header 'Content-Type: application/json'
+```
+* Credit Wallet:
+```
+curl --request POST \
+  --url http://localhost:8080/api/v1/transact/credit \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"phoneNo" : "9632211999",
+	"amount": 500
+}'
+```
+* Debit Wallet:
+```
+curl --request POST \
+  --url http://localhost:8080/api/v1/transact/debit \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"phoneNo" : "9632211999",
+	"amount": 100
+}'
+```

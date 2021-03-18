@@ -5,8 +5,8 @@ import com.ewallet.entity.request.CreateWalletRequest;
 import com.ewallet.entity.response.WalletStatusResponse;
 import com.ewallet.exception.InternalException;
 import com.ewallet.exception.ValidationError;
-import com.ewallet.service.TransactionService;
-import com.ewallet.service.WalletService;
+import com.ewallet.service.TransactionServiceImpl;
+import com.ewallet.service.WalletServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,11 +30,11 @@ import javax.validation.Valid;
         produces = MediaType.APPLICATION_JSON_VALUE)
 public class WalletController extends BaseController {
 
-    private final WalletService walletService;
-    private final TransactionService transactionService;
+    private final WalletServiceImpl walletService;
+    private final TransactionServiceImpl transactionService;
 
     @Autowired
-    public WalletController(WalletService walletService, TransactionService transactionService) {
+    public WalletController(WalletServiceImpl walletService, TransactionServiceImpl transactionService) {
         this.walletService = walletService;
         this.transactionService = transactionService;
     }
@@ -56,7 +56,7 @@ public class WalletController extends BaseController {
         try {
             WalletStatusResponse walletStatusResponse = new WalletStatusResponse();
             walletStatusResponse.setWallet(walletService.getWalletByPhoneNo(phoneNo));
-            walletStatusResponse.setTransactions(transactionService.getTransactionByPhoneNo(phoneNo));
+            walletStatusResponse.setTransactions(transactionService.getTransactionsByPhoneNo(phoneNo));
             return new ResponseEntity<>(createSuccessResponse(walletStatusResponse), HttpStatus.OK);
         } catch (InternalException e) {
             return new ResponseEntity<>(createErrorResponse(e), HttpStatus.BAD_REQUEST);

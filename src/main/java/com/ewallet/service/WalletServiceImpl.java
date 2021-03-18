@@ -5,32 +5,43 @@ import com.ewallet.entity.Wallet;
 import com.ewallet.entity.request.CreateWalletRequest;
 import com.ewallet.exception.InternalException;
 import com.ewallet.exception.ValidationError;
-import com.ewallet.repository.WalletRepository;
+import com.ewallet.repository.WalletRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
  * Created by karan.uppal on 18/03/21
  **/
-@Service
-public class WalletService {
+public class WalletServiceImpl implements WalletService {
 
-    private final WalletRepository walletRepository;
+    private final WalletRepositoryImpl walletRepository;
 
     @Autowired
-    public WalletService(WalletRepository walletRepository) {
+    public WalletServiceImpl(WalletRepositoryImpl walletRepository) {
         this.walletRepository = walletRepository;
     }
 
     public Wallet createWallet(CreateWalletRequest request) throws ValidationError {
         validateCreateWalletRequest(request);
         Wallet wallet = createWallet(createUser(request));
-        walletRepository.addWallet(wallet);
+        walletRepository.add(wallet);
         return wallet;
     }
 
     public Wallet getWalletByPhoneNo(String phoneNo) throws InternalException {
         return walletRepository.getWalletByPhoneNo(phoneNo);
+    }
+
+    public void acquireWriteLockOnWallet(String walletId) throws InternalException {
+        Wallet wallet = walletRepository.getWalletByWalletId(walletId);
+        wallet.setInTransaction(true);
+        walletRepository.updateWalletByWalletId(walletId, wallet);
+    }
+
+    public void releaseWriteLockOnWallet(String walletId) throws InternalException {
+        Wallet wallet = walletRepository.getWalletByWalletId(walletId);
+        wallet.setInTransaction(false);
+        walletRepository.updateWalletByWalletId(walletId, wallet);
     }
 
     private Wallet createWallet(User user) {

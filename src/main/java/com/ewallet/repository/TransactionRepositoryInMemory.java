@@ -12,13 +12,12 @@ import java.util.Objects;
 /**
  * Created by karan.uppal on 18/03/21
  **/
-@Repository
-public class TransactionRepository {
+public class TransactionRepositoryInMemory {
 
     private HashMap<String, Transaction> transactionIdToTransaction;
     private HashMap<String, List<String>> walletIdToTransactionIds;
 
-    public TransactionRepository() {
+    public TransactionRepositoryInMemory() {
         this.transactionIdToTransaction = new HashMap<>();
         this.walletIdToTransactionIds = new HashMap<>();
     }
